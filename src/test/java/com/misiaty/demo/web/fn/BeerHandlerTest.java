@@ -11,7 +11,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
@@ -79,7 +78,7 @@ class BeerHandlerTest {
         testBeer.setBeerStyle("");
 
         webTestClient.put()
-                .uri(BeerRouterConfig.BEER_PATH_ID, testBeer)
+                .uri(BeerRouterConfig.BEER_PATH_ID, testBeer.getId())
                 .body(Mono.just(testBeer), BeerDTO.class)
                 .exchange()
                 .expectStatus().isBadRequest();
@@ -97,7 +96,6 @@ class BeerHandlerTest {
     @Test
     @Order(4)
     void testUpdateBeer() {
-
         BeerDTO beerDTO = getSavedTestBeer();
 
         webTestClient.put()

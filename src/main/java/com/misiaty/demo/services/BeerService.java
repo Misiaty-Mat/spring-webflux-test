@@ -1,6 +1,5 @@
 package com.misiaty.demo.services;
 
-import com.misiaty.demo.domain.Beer;
 import com.misiaty.demo.model.BeerDTO;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
