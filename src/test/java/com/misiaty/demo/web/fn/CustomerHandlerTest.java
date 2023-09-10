@@ -14,6 +14,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockOAuth2Login;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest
@@ -28,6 +29,7 @@ class CustomerHandlerTest {
                 .configureClient()
                 .baseUrl("http://localhost:8080/")
                 .build();
+        webTestClient.mutateWith(mockOAuth2Login());
     }
 
     @Test
@@ -160,7 +162,8 @@ class CustomerHandlerTest {
     }
 
     public CustomerDTO getSavedTestCustomer() {
-        FluxExchangeResult<CustomerDTO> customerDTOFluxExchangeResult = webTestClient.post()
+        FluxExchangeResult<CustomerDTO> customerDTOFluxExchangeResult = webTestClient.mutateWith(mockOAuth2Login())
+                .post()
                 .uri(CustomerRouterConfig.CUSTOMER_PATH)
                 .body(Mono.just(CustomerServiceImplTest.getTestCustomer()), CustomerDTO.class)
                 .header("Content-Type", "application/json")
@@ -169,7 +172,8 @@ class CustomerHandlerTest {
 
         List<String> location = customerDTOFluxExchangeResult.getRequestHeaders().get("Location");
 
-        return webTestClient.get().uri(CustomerRouterConfig.CUSTOMER_PATH)
+        return webTestClient.mutateWith(mockOAuth2Login())
+                .get().uri(CustomerRouterConfig.CUSTOMER_PATH)
                 .exchange().returnResult(CustomerDTO.class).getResponseBody().blockFirst();
     }
 }
